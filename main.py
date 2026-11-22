@@ -32,6 +32,57 @@ class Quiz:
         )
 
 
+def get_default_quizzes() -> list[Quiz]:
+    """상담심리학 핵심 개념 5문제 기본 데이터"""
+    return [
+        Quiz(
+            question="[행동주의] 스키너의 조작적 조건형성에서 시끄러운 알람을 끄기 위해 일어나는 것처럼, 혐오 자극을 제거해 행동의 빈도를 높이는 원리는?",
+            choices=["정적 강화", "부적 강화", "정적 처벌", "부적 처벌"],
+            answer=2,
+        ),
+        Quiz(
+            question="[인간중심상담] 칼 로저스가 제시한 상담자의 3대 태도 중 하나인 '일치성(Congruence)'이 의미하는 바는?",
+            choices=[
+                "상담자와 내담자의 가치관이 완전히 일치하는 상태",
+                "내담자의 말에 무조건 동의하고 맞장구쳐 주는 태도",
+                "상담자의 내적 감정과 외적 표현이 모순 없이 진실된 상태",
+                "상담 이론과 실제 기법이 정확히 일치하는 상태",
+            ],
+            answer=3,
+        ),
+        Quiz(
+            question="[인지치료] 아론 벡의 인지치료에서 말하는 인지적 왜곡 중 '개인화(Personalization)'에 해당하는 사례는?",
+            choices=[
+                "자신과 무관한 외부의 부정적 사건을 모두 자기 탓으로 돌리는 것",
+                "내담자 성향에 맞춘 개인별 맞춤형 상담 계획을 세우는 것",
+                "타인의 마음을 근거 없이 지레짐작하여 단정 짓는 것",
+                "사소한 실수 하나만으로 자신을 완전히 실패자로 규정하는 것",
+            ],
+            answer=1,
+        ),
+        Quiz(
+            question="[방어기제] 무의식적으로 용납할 수 없는 충동과 정반대되는 행동(예: 미워하는 사람에게 과도하게 친절을 베풂)을 하는 방어기제는?",
+            choices=[
+                "합리화(Rationalization)",
+                "전치(Displacement)",
+                "승화(Sublimation)",
+                "반동형성(Reaction Formation)",
+            ],
+            answer=4,
+        ),
+        Quiz(
+            question="[정신분석] 상담 과정에서 '상담자'가 자신의 과거 미해결된 갈등이나 감정을 '내담자'에게 무의식적으로 투사하는 현상은?",
+            choices=[
+                "전이(Transference)",
+                "역전이(Countertransference)",
+                "저항(Resistance)",
+                "라포(Rapport)",
+            ],
+            answer=2,
+        ),
+    ]
+
+
 def get_valid_int(prompt: str, min_val: int, max_val: int) -> int:
     """공백 제거, 빈 입력, 문자 입력, 범위 초과를 방어하는 정수 입력 함수"""
     while True:
@@ -64,13 +115,14 @@ def print_menu() -> None:
 
 
 def main() -> None:
+    quizzes = get_default_quizzes()
     try:
         while True:
             print_menu()
             choice = get_valid_int("선택: ", 1, 5)
 
             if choice == 1:
-                print("\n[안내] 퀴즈 풀기 기능 준비 중입니다.")
+                print(f"\n[안내] 퀴즈 풀기 기능 준비 중입니다. (현재 {len(quizzes)}문제 대기 중)")
             elif choice == 2:
                 print("\n[안내] 퀴즈 추가 기능 준비 중입니다.")
             elif choice == 3:
