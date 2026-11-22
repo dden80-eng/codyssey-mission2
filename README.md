@@ -290,6 +290,8 @@
 
 ### ▶ 원격 저장소 연동(`clone` / `pull`) 실행 증빙
 
+![git clone 및 pull 실행 터미널 캡처](clone_pull.png)
+
 ```bash
 
 $ git clone https://github.com/dden80-eng/codyssey-mission2.git
