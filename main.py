@@ -1,3 +1,37 @@
+class Quiz:
+    """개별 퀴즈 한 문제를 표현하는 문제 카드 클래스"""
+
+    def __init__(self, question: str, choices: list[str], answer: int) -> None:
+        self.question = question
+        self.choices = choices
+        self.answer = answer
+
+    def display(self, index: int) -> None:
+        print("\n" + "-" * 44)
+        print(f"[문제 {index}] {self.question}\n")
+        for idx, choice in enumerate(self.choices, start=1):
+            print(f"  {idx}. {choice}")
+        print("-" * 44)
+
+    def check_answer(self, user_answer: int) -> bool:
+        return user_answer == self.answer
+
+    def to_dict(self) -> dict:
+        return {
+            "question": self.question,
+            "choices": self.choices,
+            "answer": self.answer,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Quiz":
+        return cls(
+            question=data["question"],
+            choices=data["choices"],
+            answer=int(data["answer"]),
+        )
+
+
 def get_valid_int(prompt: str, min_val: int, max_val: int) -> int:
     """공백 제거, 빈 입력, 문자 입력, 범위 초과를 방어하는 정수 입력 함수"""
     while True:
