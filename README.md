@@ -317,10 +317,18 @@ Already up to date.
 
 
 ### ▶ 전체 커밋 이력 및 브랜치 병합 그래프 (`git log --graph --oneline --all`)
-
 ```text
-
-* 591a4ea (HEAD -> main, origin/main, feature/state-persistence) Docs: 아키텍처·영속성 복구·성능 분석 및 Git 증빙 리포트 작성
+*   f9d0df3 (HEAD -> main, origin/main) Merge: feature/git-evidence 브랜치 병합 (실습 증빙 및 이력 보완)
+|\  
+| * 5af7b17 (feature/git-evidence) Docs: 원격 저장소 clone/pull 터미널 실행 캡처 이미지 추가
+|/  
+* 68944cd Docs: 최신 커밋 및 브랜치 병합 그래프 증빙 반영
+*   4c9768f Merge: feature/state-persistence 브랜치 병합 (영속성 및 복구 통합)
+|\  
+| * afb9382 (feature/state-persistence) Feat: QuizGame 컨트롤러 분리 및 state.json 영속성·손상 복구 구현
+|/  
+* cf0e174 Docs: 아키텍처·영속성 복구·성능 분석 및 Git 증빙 리포트 작성
+* 591a4ea Docs: 아키텍처·영속성 복구·성능 분석 및 Git 증빙 리포트 작성
 * 9fb4cb6 Docs: 단계별 개발 과정 및 코드 구현 히스토리 추가
 * 4f2c92b Docs: 프로젝트 소개 및 주제 선정 배경 README 작성
 * 8720a50 Feat: 퀴즈 추가, 퀴즈 목록 조회, 점수 기록 확인 기능 구현
@@ -329,5 +337,4 @@ Already up to date.
 * e93ab55 Feat: 개별 퀴즈를 관리하는 Quiz 클래스 구현
 * 2512bab Feat: 메인 메뉴 UI 및 공통 입력 예외 처리 구현
 * 6df31c4 Chore: 초기 프로젝트 저장소 및 기본 파일 설정
-
 ```
