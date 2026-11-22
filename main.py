@@ -24,7 +24,7 @@ BIG_DIGITS = {
 
 
 class Quiz:
-    """개별 퀴즈 한 문제를 표현하는 문제 카드 클래스"""
+    """개별 퀴즈 한 문제를 표현하는 문제 카드"""
 
     def __init__(self, question: str, choices: list[str], answer: int) -> None:
         self.question = question
@@ -109,7 +109,7 @@ def get_default_quizzes() -> list[Quiz]:
 
 
 def get_valid_int(prompt: str, min_val: int, max_val: int) -> int:
-    """공백 제거, 빈 입력, 문자 입력, 범위 초과를 방어하는 정수 입력 함수"""
+    """빈칸, 글자 입력, 범위 초과를 막아주는 숫자 입력 기능"""
     while True:
         raw = input(prompt).strip()
         if not raw:
@@ -125,6 +125,16 @@ def get_valid_int(prompt: str, min_val: int, max_val: int) -> int:
             print(f"⚠️ 잘못된 입력입니다. {min_val}~{max_val} 사이의 숫자를 입력하세요.")
             continue
         return value
+
+
+def get_non_empty_str(prompt: str) -> str:
+    """빈칸이나 공백만 입력하는 것을 막아주는 글자 입력 기능"""
+    while True:
+        text = input(prompt).strip()
+        if not text:
+            print("⚠️ 내용이 비어 있습니다. 글자를 입력해 주세요.")
+            continue
+        return text
 
 
 def build_timer_lines(remaining: float, prompt: str, buf: str, warn_msg: str) -> list[str]:
@@ -161,7 +171,7 @@ def build_timer_lines(remaining: float, prompt: str, buf: str, warn_msg: str) ->
 
 
 def get_timed_int(prompt: str, min_val: int, max_val: int, time_limit: float) -> tuple[int | None, float]:
-    """큰 초시계와 함께 제한시간 내에 숫자를 입력받는 함수"""
+    """큰 초시계와 함께 제한시간 내에 숫자를 입력받는 기능"""
     start_time = time.time()
 
     if os.name == "nt" and sys.stdin.isatty():
@@ -228,9 +238,8 @@ def get_timed_int(prompt: str, min_val: int, max_val: int, time_limit: float) ->
 
 
 def print_bomb_explosion() -> None:
-    print(
-        r"""
-\033[1;91m          _.-^^---....,,--
+    bomb_art = r"""
+          _.-^^---....,,--
       _--                  --_
      <                        >)
      |       💥 BOOM!! 💥      |
@@ -240,12 +249,12 @@ def print_bomb_explosion() -> None:
             .-=||  | |=-.
             `-=#$%&%$#=-'
                | ;  :|
-      _____.,-#%&$@%#&#~,._____\033[0m
-        """
-    )
+      _____.,-#%&$@%#&#~,._____
+    """
+    print(f"\033[1;91m{bomb_art}\033[0m")
 
 
-def play_quizzes(quizzes: list[Quiz]) -> None:
+def play_quizzes(quizzes: list[Quiz], score_history: list[dict]) -> None:
     if not quizzes:
         print("\n⚠️ 등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가해 주세요.")
         return
@@ -272,9 +281,74 @@ def play_quizzes(quizzes: list[Quiz]) -> None:
             print(f"💡 정답은 {quiz.answer}번({quiz.choices[quiz.answer - 1]})입니다.")
             time.sleep(2)
 
-    score = int((correct_count / len(quizzes)) * 100)
+    total = len(quizzes)
+    score = int((correct_count / total) * 100)
+    score_history.append(
+        {
+            "round": len(score_history) + 1,
+            "correct": correct_count,
+            "total": total,
+            "score": score,
+        }
+    )
+
     print("\n" + "=" * 52)
-    print(f"🏆 최종 결과: {len(quizzes)}문제 중 {correct_count}문제 정답! ({score}점)")
+    print(f"🏆 최종 결과: {total}문제 중 {correct_count}문제 정답! ({score}점)")
+    print("=" * 52)
+
+
+def add_quiz(quizzes: list[Quiz]) -> None:
+    print("\n" + "=" * 52)
+    print("   ✏️ 새 상담심리학 퀴즈 추가")
+    print("=" * 52)
+    question = get_non_empty_str("문제 내용을 입력하세요: ")
+
+    choices: list[str] = []
+    for i in range(1, 5):
+        choice_text = get_non_empty_str(f"보기 {i}번을 입력하세요: ")
+        choices.append(choice_text)
+
+    answer = get_valid_int("정답 번호를 입력하세요 (1~4): ", 1, 4)
+    quizzes.append(Quiz(question=question, choices=choices, answer=answer))
+    print(f"\n✅ 새 문제가 등록되었습니다! (현재 총 {len(quizzes)}문제)")
+
+
+def list_quizzes(quizzes: list[Quiz]) -> None:
+    print("\n" + "=" * 52)
+    print(f"   📋 등록된 퀴즈 목록 (총 {len(quizzes)}문제)")
+    print("=" * 52)
+
+    if not quizzes:
+        print("등록된 퀴즈가 없습니다.")
+        return
+
+    for idx, quiz in enumerate(quizzes, start=1):
+        print(f"\n[{idx}번 문제] {quiz.question}")
+        for c_idx, choice in enumerate(quiz.choices, start=1):
+            mark = " ◀ (정답)" if c_idx == quiz.answer else ""
+            print(f"   {c_idx}. {choice}{mark}")
+    print("\n" + "=" * 52)
+
+
+def show_scores(score_history: list[dict]) -> None:
+    print("\n" + "=" * 52)
+    print("   📊 나의 퀴즈 점수 기록")
+    print("=" * 52)
+
+    if not score_history:
+        print("아직 퀴즈를 푼 기록이 없습니다. 1번을 눌러 도전해 보세요!")
+        return
+
+    for record in score_history:
+        print(
+            f"  • {record['round']}회차 도전: "
+            f"{record['total']}문제 중 {record['correct']}문제 해체 성공 ({record['score']}점)"
+        )
+
+    best_score = max(r["score"] for r in score_history)
+    avg_score = sum(r["score"] for r in score_history) / len(score_history)
+    print("-" * 52)
+    print(f"  🥇 최고 점수: {best_score}점  |  📈 평균 점수: {avg_score:.1f}점")
     print("=" * 52)
 
 
@@ -292,19 +366,20 @@ def print_menu() -> None:
 
 def main() -> None:
     quizzes = get_default_quizzes()
+    score_history: list[dict] = []
     try:
         while True:
             print_menu()
             choice = get_valid_int("선택: ", 1, 5)
 
             if choice == 1:
-                play_quizzes(quizzes)
+                play_quizzes(quizzes, score_history)
             elif choice == 2:
-                print("\n[안내] 퀴즈 추가 기능 준비 중입니다.")
+                add_quiz(quizzes)
             elif choice == 3:
-                print("\n[안내] 퀴즈 목록 기능 준비 중입니다.")
+                list_quizzes(quizzes)
             elif choice == 4:
-                print("\n[안내] 점수 확인 기능 준비 중입니다.")
+                show_scores(score_history)
             elif choice == 5:
                 print("\n👋 게임을 안전하게 종료합니다.")
                 break
